@@ -83,18 +83,9 @@ void do_server(char* file_name) {
         ERR("ERROR: cannot open file\n")
     PRINT("File opened\n")
 
-    if ((main_fifo_fd = open(FIFO_NAME, O_RDONLY)) == -1) 
+    if ((main_fifo_fd = open(FIFO_NAME, O_RDWR)) == -1) 
         ERR("ERROR: cannot open pipe\n")
     PRINT("Main FIFO opened!\n")
-    
-    // DIRTY HACK: used to keep input end opened so that read() is a blocking
-    // call
-    int writefd;
-    if ((writefd = open(FIFO_NAME, O_WRONLY)) == -1) 
-        ERR("ERROR: cannot open special FIFO in write mode\n")
-    PRINT("Opened special FIFO in write mode, reading the main FIFO...\n")
-
-    // END
 
     int bytesnum, client_pid;
     bytesnum = read(main_fifo_fd, &client_pid, sizeof(int));
